@@ -166,33 +166,15 @@ export default function AdminDashboard() {
                          const sourceItems = itemsForOrder.length > 0 ? itemsForOrder : (order.items || []);
                          
                          return sourceItems.map((i, idx) => {
-                           let stationName = i.stations?.slug || i.stations?.name || (stations.find(s => s.id === i.station_id)?.name);
-                           if (!stationName) stationName = i.preparation_type || 'Unknown';
-                           const status = i.item_status ? i.item_status.replace(/_/g, ' ') : '';
+                           const status = i.item_status ? i.item_status.toLowerCase() : '';
+                           const isServed = status === 'served';
                            
                            return (
-                             <div key={i.id || idx} className="flex flex-col gap-1 bg-white/5 border border-white/10 rounded px-2 py-1.5 min-w-[120px]">
-                               <div className="flex justify-between items-start text-xs">
-                                 <div className="flex gap-1.5">
-                                   <span className="text-[var(--color-brand-caramel)] font-bold">{i.quantity}×</span>
-                                   <span className="text-white/90 line-clamp-1">{i.name}</span>
-                                 </div>
-                               </div>
-                               <div className="flex items-center gap-1.5">
-                                 <span className="px-1.5 py-0.5 bg-white/10 text-white/60 rounded-[4px] text-[8px] uppercase font-bold tracking-wider" title={stationName}>
-                                   {stationName.substring(0,3)}
-                                 </span>
-                                 {status && (
-                                   <span className={`px-1.5 py-0.5 rounded-[4px] text-[8px] uppercase font-bold tracking-wider ${
-                                     status === 'served' ? 'bg-green-500/20 text-green-400' :
-                                     status === 'ready to serve' ? 'bg-[var(--color-brand-caramel)]/20 text-[var(--color-brand-caramel)]' :
-                                     status === 'prepared' ? 'bg-green-500/20 text-green-400' :
-                                     status === 'preparing' ? 'bg-yellow-500/20 text-yellow-400' :
-                                     'bg-white/10 text-white/60'
-                                   }`}>
-                                     {status}
-                                   </span>
-                                 )}
+                             <div key={i.id || idx} className="flex items-center gap-2 bg-white/5 border border-white/10 rounded px-2.5 py-1.5 max-w-[180px]">
+                               <div className={`w-2 h-2 rounded-full shrink-0 ${isServed ? 'bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.6)]' : 'bg-orange-500 shadow-[0_0_6px_rgba(249,115,22,0.6)]'}`} title={isServed ? 'Served' : 'Not Served'} />
+                               <div className="flex gap-1.5 text-xs min-w-0">
+                                 <span className="text-[var(--color-brand-caramel)] font-bold shrink-0">{i.quantity}×</span>
+                                 <span className="text-white/90 truncate">{i.name}</span>
                                </div>
                              </div>
                            );
@@ -212,7 +194,14 @@ export default function AdminDashboard() {
                       → {nextStatus}
                     </button>
                   )}
-                  {order.tabs?.status !== 'Closed' && (
+                  {order.tabs?.status === 'Closed' ? (
+                     <button
+                        onClick={() => window.open(`/admin/print/${order.tab_id}`, '_blank')}
+                        className="ml-2 px-3 py-1.5 bg-white/10 text-white text-xs font-semibold rounded-[8px] hover:bg-white/20 transition-all whitespace-nowrap border border-white/10"
+                     >
+                       Print Bill
+                     </button>
+                  ) : (
                      <button
                         onClick={async () => {
                            if(window.confirm(`Settle Bill for Table ${order.table_number}?`)) {
