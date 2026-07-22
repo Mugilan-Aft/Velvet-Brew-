@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-cream: #F6EDE0;
+  --color-brand-cream-light: #FAF1E4;
+  
+  --color-brand-espresso: #2E1B12;
+  --color-brand-espresso-light: #3B2418;
+  
+  --color-brand-caramel: #C08552;
+  --color-brand-caramel-light: #B87333;
+  
+  --color-brand-cherry: #6B2C2C;
+  --color-brand-cherry-light: #4E1F1F;
+  
+  --color-brand-umber: #2B1B12;
+  --color-brand-umber-light: #1E1410;
+  
+  --color-surface-1: #FFFDF8;
+  --color-surface-2: #F1E4D3;
+  --color-surface-3: #EAD9C2;
+  --color-surface-4: #E3D0B4;
+  
+  --color-outline: #8A7360;
+  --color-outline-subtle: #E3D2BA;
+
+  --font-serif: 'Source Serif 4', serif;
+  --font-sans: 'Work Sans', sans-serif;
+
+  --shadow-brown: 0 4px 20px rgba(59, 36, 24, 0.08);
+  --shadow-brown-sm: 0 2px 10px rgba(59, 36, 24, 0.04);
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-brand-cream);
+    color: var(--color-brand-umber);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+  }
+  
+  /* Use tabular figures for numbers by default for cleaner pricing/tables */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Custom Global Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(192, 133, 82, 0.4); /* caramel tint */
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(192, 133, 82, 0.7);
+  }
+  
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(192, 133, 82, 0.5) transparent;
+  }
+}
+
+@layer utilities {
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}

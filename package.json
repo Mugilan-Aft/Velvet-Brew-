@@ -1,0 +1,12 @@
+{
+  "name": "velvet-brew-monorepo",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd backend && npm run dev",
+    "start:frontend": "cd frontend && npm run dev -- --port 5173"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.3"
+  }
+}
