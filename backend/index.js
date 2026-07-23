@@ -303,10 +303,17 @@ app.patch('/api/menu/:id', async (req, res) => {
 });
 
 app.delete('/api/menu/:id', async (req, res) => {
+  // Unlink from order history to preserve past orders
+  await supabase
+    .from('order_items')
+    .update({ menu_item_id: null })
+    .eq('menu_item_id', req.params.id);
+
   const { error } = await supabase
     .from('menu_items')
     .delete()
     .eq('id', req.params.id);
+    
   if (error) return res.status(500).json({ error: error.message });
   res.json({ success: true });
 });
@@ -499,8 +506,8 @@ app.post('/api/orders', async (req, res) => {
   const { tab_id, table_number, items, subtotal, tax, total, status, serve_ready_with_kitchen } = req.body;
   
   const prep_status = {};
-  const hasKdsItems = items.some(i => i.preparation_type === 'BARISTA' || i.preparation_type === 'KITCHEN');
-  const hasReadyItems = items.some(i => i.preparation_type === 'READY');
+  const hasKdsItems = items.some(i => i.preparation_type?.toLowerCase() === 'barista' || i.preparation_type?.toLowerCase() === 'kitchen');
+  const hasReadyItems = items.some(i => i.preparation_type?.toLowerCase() === 'ready');
   
   if (hasKdsItems) prep_status['KDS'] = 'New';
   if (hasReadyItems) prep_status['READY'] = 'New';

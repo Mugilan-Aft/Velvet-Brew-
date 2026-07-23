@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getMenu, createMenuItem, updateMenuItem, deleteMenuItem, getCategories, createCategory, deleteCategory, uploadImage, getStations, BASE_URL } from '../../services/api';
 
-const DIETARY_TAGS = ['none', 'veg', 'non-veg', 'vegan'];
+const DIETARY_TAGS = ['none', 'veg', 'non-veg', 'vegan', 'egg mixed'];
 const PREP_TYPES = ['kitchen', 'ready'];
 const EMPTY_FORM = {
   name: '', description: '', price: '', category: '',
@@ -127,8 +127,13 @@ export default function AdminMenu() {
 
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this item?')) return;
-    await deleteMenuItem(id).catch(console.error);
-    load();
+    try {
+      await deleteMenuItem(id);
+      load();
+    } catch (e) {
+      alert("Failed to delete item: " + e.message);
+      console.error(e);
+    }
   };
 
   const toggleStock = async (item) => {

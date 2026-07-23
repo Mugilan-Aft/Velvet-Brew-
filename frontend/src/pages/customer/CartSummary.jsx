@@ -21,16 +21,24 @@ export default function CartSummary() {
   const total = subtotal + tax;
 
   useEffect(() => {
-    let timer;
-    if (holdingOrder && timeLeft > 0) {
-      timer = setInterval(() => setTimeLeft(t => t - 1), 1000);
-    } else if (holdingOrder && timeLeft === 0) {
-      // Time expired! Auto-confirm locally
+    if (!holdingOrder) return;
+    
+    if (timeLeft > 0) {
+      const timer = setTimeout(() => setTimeLeft(t => t - 1), 1000);
+      return () => clearTimeout(timer);
+    } else {
+      // Time expired! Auto-confirm to backend before navigating
       const oId = holdingOrder.id;
-      clearCart();
-      navigate('/tracking', { state: { tabId, orderId: oId } });
+      updateOrderStatus(oId, 'New').then(() => {
+        clearCart();
+        navigate('/tracking', { state: { tabId, orderId: oId } });
+      }).catch(e => {
+        console.error("Failed to sync expired timer:", e);
+        // Fallback: navigate anyway, backend timer will catch it
+        clearCart();
+        navigate('/tracking', { state: { tabId, orderId: oId } });
+      });
     }
-    return () => clearInterval(timer);
   }, [holdingOrder, timeLeft, navigate, clearCart, tabId]);
 
   const initSendToKitchen = () => {

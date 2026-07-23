@@ -27,17 +27,27 @@ export default function PayNow() {
   }, [tabId, navigate]);
 
   const processTabCloseAndRedirect = async () => {
-    await updateTab(tabId, { 
-      status: 'Closed', 
-      payment_method: method, 
-      total_paid: totalDue,
-      customer_phone: phone.trim() !== '' ? phone.trim() : null 
-    });
-    localStorage.removeItem('vb_tab_id'); // Clear session
-    navigate('/feedback'); // Route customer to feedback/loyalty view
+    try {
+      await updateTab(tabId, { 
+        status: 'Closed', 
+        payment_method: method, 
+        total_paid: totalDue,
+        customer_phone: phone.trim() !== '' ? phone.trim() : null 
+      });
+      localStorage.removeItem('vb_tab_id'); // Clear session
+      navigate('/feedback'); // Route customer to feedback/loyalty view
+    } catch (e) {
+      console.error("Failed to close tab:", e);
+      alert("Failed to close tab. Please check your internet connection.");
+      setIsPaying(false);
+    }
   };
 
   const handlePay = async () => {
+    if (totalDue <= 0) {
+      alert("No pending amount to pay.");
+      return;
+    }
     setIsPaying(true);
     try {
       if (method === 'UPI') {
@@ -61,9 +71,7 @@ export default function PayNow() {
               window.location.reload();
             }
           },
-          prefill: {
-            contact: phone.trim()
-          },
+          prefill: phone.trim() ? { contact: phone.trim() } : undefined,
           theme: {
             color: "#D97B29" // var(--color-brand-caramel)
           },
@@ -74,13 +82,19 @@ export default function PayNow() {
           }
         };
 
+        if (!window.Razorpay) {
+          setIsPaying(false);
+          alert('Payment gateway failed to load. Please check your internet connection or disable adblockers.');
+          return;
+        }
+
         const rzp = new window.Razorpay(options);
         rzp.on('payment.failed', function (response) {
           setIsPaying(false);
           alert('Payment failed! Reason: ' + response.error.description);
         });
         rzp.open();
-        return; // handlePay completes later via handler or ondismiss
+        return;
       }
       
       // If Cash method selected
@@ -93,7 +107,7 @@ export default function PayNow() {
     } catch (err) {
       console.error(err);
       setIsPaying(false);
-      alert('Payment failed. Please try again or ask counter.');
+      alert(`Payment failed: ${err.message || 'Please try again or ask counter.'}`);
     }
   };
 

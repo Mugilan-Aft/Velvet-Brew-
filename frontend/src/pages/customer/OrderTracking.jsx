@@ -78,7 +78,7 @@ export default function OrderTracking() {
     <div className="pb-24 min-h-screen bg-[var(--color-brand-cream)] pt-12 p-6 flex flex-col items-center">
       {/* Toast Notification */}
       {showStaffToast && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-top-4 duration-300">
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-bottom-4 duration-300">
           <div className="bg-[#1A0D08] text-white px-4 py-3 rounded-xl shadow-xl border border-[var(--color-brand-caramel)]/30 flex items-center gap-3 whitespace-nowrap">
             <span className="material-symbols-outlined text-[var(--color-brand-caramel)]">concierge</span>
             <p className="text-sm font-medium">A staff member is on their way!</p>

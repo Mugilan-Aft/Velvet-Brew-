@@ -75,7 +75,11 @@ export default function ItemDetail() {
           <span className="material-symbols-outlined">arrow_back</span>
         </button>
         {item.dietary_tag !== 'none' && (
-          <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-[11px] font-bold uppercase ${item.dietary_tag === 'non-veg' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+          <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-[11px] font-bold uppercase ${
+            item.dietary_tag === 'non-veg' ? 'bg-red-100 text-red-700' :
+            item.dietary_tag === 'egg mixed' ? 'bg-amber-100 text-amber-700' :
+            'bg-green-100 text-green-700'
+          }`}>
             {item.dietary_tag}
           </div>
         )}

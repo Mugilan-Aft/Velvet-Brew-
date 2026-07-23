@@ -103,6 +103,12 @@ export default function AdminPOS() {
           theme: { color: "#D97B29" },
           modal: { ondismiss: () => setLoading(false) }
         };
+        if (!window.Razorpay) {
+          setLoading(false);
+          alert('Payment gateway failed to load. Please check your internet connection or disable adblockers.');
+          return;
+        }
+
         const rzp = new window.Razorpay(options);
         rzp.on('payment.failed', function (res) {
           setLoading(false);
