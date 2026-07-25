@@ -80,10 +80,12 @@ export default function App() {
       </Route>
 
       {/* Station Boards — standalone full-screen */}
+      <Route path="/station" element={<Navigate to="/station/combined" replace />} />
       <Route path="/station/:stationSlug" element={<StationBoard />} />
 
       {/* KDS — standalone full-screen */}
       <Route path="/kds" element={<KDSBoard />} />
+      <Route path="/kds/combined" element={<Navigate to="/station/combined" replace />} />
       <Route path="/kds/ready" element={<ReadyBoard />} />
     </Routes>
   )

@@ -427,7 +427,13 @@ app.get('/api/order-items', async (req, res) => {
   const { station_slug, status, order_id } = req.query;
   let query = supabase.from('order_items').select('*, orders!inner(table_number, created_at, tab_id, status), stations!inner(slug)').order('created_at', { ascending: true });
   
-  if (station_slug) query = query.eq('stations.slug', station_slug);
+  if (station_slug && station_slug !== 'all' && station_slug !== 'combined') {
+    if (station_slug.includes(',')) {
+      query = query.in('stations.slug', station_slug.split(','));
+    } else {
+      query = query.eq('stations.slug', station_slug);
+    }
+  }
   if (status) query = query.eq('item_status', status);
   if (order_id) query = query.eq('order_id', order_id);
   
@@ -459,7 +465,7 @@ app.patch('/api/order-items/:id/status', async (req, res) => {
      const anyKitchenPreparing = kitchenItems.some(i => i.item_status === 'preparing' || i.item_status === 'prepared');
 
      if (allKitchenReady) {
-        const heldItems = allItems.filter(i => i.item_status === 'pending' && i.customizations?.some(c => c.name === '_held' && c.choice === 'true'));
+        const heldItems = allItems.filter(i => i.customizations?.some(c => c.name === '_held' && c.choice === 'true'));
         if (heldItems.length > 0) {
            for (const hi of heldItems) {
               const newCusts = hi.customizations.filter(c => c.name !== '_held');
@@ -532,7 +538,7 @@ app.post('/api/orders', async (req, res) => {
         const custs = reqItem.customizations || [];
         
         if (serve_ready_with_kitchen && prepType === 'ready') {
-           initStatus = 'pending';
+           initStatus = 'ready_to_serve';
            custs.push({ name: '_held', choice: 'true' });
         }
 
