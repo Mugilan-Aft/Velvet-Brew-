@@ -1,5 +1,14 @@
 export const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
+if (!import.meta.env.VITE_API_URL) {
+  console.warn(
+    '[Velvet Brew] VITE_API_URL is not set. ' +
+    'API calls will target http://localhost:3000 which will fail in production. ' +
+    'Set VITE_API_URL in your Vercel environment variables and redeploy.'
+  );
+}
+
+
 const request = async (path, options = {}) => {
   const res = await fetch(`${BASE_URL}${path}`, {
     headers: { 'Content-Type': 'application/json' },
