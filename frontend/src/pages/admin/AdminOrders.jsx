@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getOrders, updateOrderStatus } from '../../services/api';
-import { socket } from '../../services/socket';
+import { socket, connectSocket } from '../../services/socket';
 
 const STATUS_TABS = ['All', 'New', 'Preparing', 'Ready', 'Served'];
 
@@ -20,6 +20,7 @@ export default function AdminOrders() {
   useEffect(() => {
     getOrders().then(setOrders).catch(console.error).finally(() => setLoading(false));
 
+    connectSocket();
     socket.emit('join_room', 'admin');
     const onNew = (o) => setOrders(p => [o, ...p]);
     const onUpd = (o) => setOrders(p => p.map(x => x.id === o.id ? o : x));

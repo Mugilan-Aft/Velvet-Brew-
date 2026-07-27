@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { socket } from '../../services/socket';
+import { socket, connectSocket } from '../../services/socket';
 
 const NAV = [
   { to: '/admin', label: 'Dashboard', icon: 'dashboard', end: true },
@@ -17,6 +17,7 @@ export default function AdminLayout() {
   const [callAlerts, setCallAlerts] = useState([]);
 
   useEffect(() => {
+    connectSocket();
     socket.emit('join_room', 'admin');
     
     const handleCall = (data) => {

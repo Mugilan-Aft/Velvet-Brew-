@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getOrders, updateOrderPrepStatus } from '../../services/api';
-import { socket } from '../../services/socket';
+import { socket, connectSocket } from '../../services/socket';
 
 const COLUMNS = [
   { status: 'New', label: '🆕 New', next: 'Ready', color: 'border-blue-500/40', headerBg: 'bg-blue-500/10', btnColor: 'bg-blue-500/20 text-blue-300 hover:bg-blue-500 hover:text-white' },
@@ -69,6 +69,7 @@ export default function ReadyBoard() {
     }).catch(console.error);
 
     // Join kitchen room to receive order updates
+    connectSocket();
     socket.emit('join_room', 'kitchen');
 
     const onNew = (o) => setOrders(prev => [o, ...prev]);

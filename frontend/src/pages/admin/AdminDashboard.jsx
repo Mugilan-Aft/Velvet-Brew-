@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getStats, getOrders, updateOrderStatus, purgeMockOrders } from '../../services/api';
-import { socket } from '../../services/socket';
+import { socket, connectSocket } from '../../services/socket';
 
 const STATUS_CONFIG = {
   New: { label: 'New', color: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
@@ -50,6 +50,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetchData();
+    connectSocket();
     socket.emit('join_room', 'admin');
 
     const onNew = (order) => {

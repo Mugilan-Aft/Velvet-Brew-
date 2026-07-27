@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getOrderItems, updateOrderItemStatus } from '../../services/api';
-import { socket } from '../../services/socket';
+import { socket, connectSocket } from '../../services/socket';
 
 export default function ServingQueue() {
   const [items, setItems] = useState([]);
@@ -10,6 +10,7 @@ export default function ServingQueue() {
     fetchReadyItems();
 
     // The admin room receives updates for all items
+    connectSocket();
     socket.emit('join_room', 'admin');
 
     const handleUpdate = (updatedItem) => {

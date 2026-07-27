@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getOrderItems, updateOrderItemStatus, getStations } from '../../services/api';
-import { socket } from '../../services/socket';
+import { socket, connectSocket } from '../../services/socket';
 
 const STATUS_COLUMNS = [
   { id: 'pending', label: 'Pending', color: 'border-white/10' },
@@ -35,6 +35,7 @@ export default function StationBoard() {
     fetchQueue();
 
     // Join Socket Room
+    connectSocket();
     if (isCombined) {
       socket.emit('join_room', 'kitchen');
       socket.emit('join_room', 'ready_stock');

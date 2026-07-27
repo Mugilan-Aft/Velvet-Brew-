@@ -4,7 +4,7 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
 import { getMenu } from '../../services/api';
-import { socket } from '../../services/socket';
+import { socket, connectSocket } from '../../services/socket';
 
 const DietDot = ({ tag }) => {
   if (tag === 'none') return null;
@@ -66,6 +66,7 @@ export default function Menu() {
   const categories = ['All', ...new Set(menu.map(i => i.category))];
 
   const handleCallStaff = () => {
+    connectSocket();
     socket.emit('call_staff', { table_number: tableNumber });
     setShowStaffToast(true);
     setTimeout(() => setShowStaffToast(false), 3000);

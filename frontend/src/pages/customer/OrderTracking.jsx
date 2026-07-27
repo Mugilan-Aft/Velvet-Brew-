@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '../../components/ui/Button';
-import { socket } from '../../services/socket';
+import { socket, connectSocket } from '../../services/socket';
 
 const STEPS = [
   { label: 'Order Placed', value: 'New', icon: 'check_circle' },
@@ -40,6 +40,7 @@ export default function OrderTracking() {
     }
 
     // Join the customer's room to receive updates
+    connectSocket();
     socket.emit('join_room', `customer-${tabId}`);
 
     const handler = (order) => {
