@@ -56,6 +56,20 @@ export const deleteOrder = (id) => request(`/api/orders/${id}`, { method: 'DELET
 export const purgeMockOrders = () => request('/api/orders/mock', { method: 'DELETE' });
 export const createRazorpayOrder = (amount) => request('/api/razorpay/order', { method: 'POST', body: JSON.stringify({ amount }) });
 
+export const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    if (window.Razorpay) {
+      resolve(true);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 // ── Stations & Order Items ────────────────────
 export const getStations = () => request('/api/stations');
 export const getOrderItems = (params = {}) => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getMenu, openTab, placeOrder, createRazorpayOrder, updateTab } from '../../services/api';
+import { getMenu, openTab, placeOrder, createRazorpayOrder, updateTab, loadRazorpayScript } from '../../services/api';
 
 export default function AdminPOS() {
   const [menu, setMenu] = useState([]);
@@ -84,7 +84,18 @@ export default function AdminPOS() {
       };
 
       if (method === 'UPI') {
+        const isLoaded = await loadRazorpayScript();
+        if (!isLoaded || !window.Razorpay) {
+          setLoading(false);
+          alert('Payment gateway failed to load. Please check your internet connection or disable adblockers.');
+          return;
+        }
+
         const rpOrder = await createRazorpayOrder(tot);
+        if (!rpOrder || !rpOrder.key_id) {
+          throw new Error('Payment gateway configuration error: Missing Razorpay Key ID.');
+        }
+
         const options = {
           key: rpOrder.key_id,
           amount: rpOrder.amount,
@@ -103,11 +114,6 @@ export default function AdminPOS() {
           theme: { color: "#D97B29" },
           modal: { ondismiss: () => setLoading(false) }
         };
-        if (!window.Razorpay) {
-          setLoading(false);
-          alert('Payment gateway failed to load. Please check your internet connection or disable adblockers.');
-          return;
-        }
 
         const rzp = new window.Razorpay(options);
         rzp.on('payment.failed', function (res) {

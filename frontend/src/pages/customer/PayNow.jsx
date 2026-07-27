@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { QRCodeSVG } from 'qrcode.react';
-import { getTab, updateTab, createRazorpayOrder } from '../../services/api';
+import { getTab, updateTab, createRazorpayOrder, loadRazorpayScript } from '../../services/api';
 
 export default function PayNow() {
   const navigate = useNavigate();
@@ -51,9 +51,20 @@ export default function PayNow() {
     setIsPaying(true);
     try {
       if (method === 'UPI') {
+        const isLoaded = await loadRazorpayScript();
+        if (!isLoaded || !window.Razorpay) {
+          setIsPaying(false);
+          alert('Payment gateway failed to load. Please check your internet connection or disable adblockers.');
+          return;
+        }
+
         // Create an order string from the server
         const rpOrder = await createRazorpayOrder(totalDue);
+        if (!rpOrder || !rpOrder.key_id) {
+          throw new Error('Payment gateway configuration error: Missing Razorpay Key ID.');
+        }
         
+        const prefillData = phone?.trim() ? { contact: phone.trim() } : {};
         const options = {
           key: rpOrder.key_id, // The Key ID passed back from backend
           amount: rpOrder.amount,
@@ -71,7 +82,7 @@ export default function PayNow() {
               window.location.reload();
             }
           },
-          prefill: phone.trim() ? { contact: phone.trim() } : undefined,
+          ...(Object.keys(prefillData).length > 0 && { prefill: prefillData }),
           theme: {
             color: "#D97B29" // var(--color-brand-caramel)
           },
@@ -81,12 +92,6 @@ export default function PayNow() {
             }
           }
         };
-
-        if (!window.Razorpay) {
-          setIsPaying(false);
-          alert('Payment gateway failed to load. Please check your internet connection or disable adblockers.');
-          return;
-        }
 
         const rzp = new window.Razorpay(options);
         rzp.on('payment.failed', function (response) {
