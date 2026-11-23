@@ -1,8 +1,13 @@
-import React from 'react'
+import React from 'react';
 
-export function Card({ children, className = '', hoverable = false, ...props }) {
+export function Card({
+  children,
+  className = '',
+  hoverable = false,
+  ...props
+}) {
   return (
-    <div 
+    <div
       className={`
         bg-[var(--color-surface-1)] 
         rounded-[16px] 
@@ -15,13 +20,13 @@ export function Card({ children, className = '', hoverable = false, ...props }) 
     >
       {children}
     </div>
-  )
+  );
 }
 
 export function AdminCard({ children, className = '', ...props }) {
   // Admin cards have 8px radius, 1px border, no shadow
   return (
-    <div 
+    <div
       className={`
         bg-white 
         rounded-[8px] 
@@ -33,5 +38,5 @@ export function AdminCard({ children, className = '', ...props }) {
     >
       {children}
     </div>
-  )
+  );
 }

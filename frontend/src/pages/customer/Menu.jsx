@@ -10,7 +10,7 @@ const DietDot = ({ tag }) => {
   if (tag === 'none') return null;
   let color = 'bg-green-500';
   let textColor = 'text-green-700';
-  
+
   if (tag === 'non-veg') {
     color = 'bg-red-500';
     textColor = 'text-red-700';
@@ -18,9 +18,11 @@ const DietDot = ({ tag }) => {
     color = 'bg-amber-500';
     textColor = 'text-amber-700';
   }
-  
+
   return (
-    <div className={`bg-white/90 backdrop-blur-sm px-1.5 py-0.5 rounded text-[10px] uppercase font-bold flex items-center gap-1 ${textColor}`}>
+    <div
+      className={`bg-white/90 backdrop-blur-sm px-1.5 py-0.5 rounded text-[10px] uppercase font-bold flex items-center gap-1 ${textColor}`}
+    >
       <span className={`w-2 h-2 rounded-sm ${color}`} />
       {tag}
     </div>
@@ -38,9 +40,10 @@ export default function Menu() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showStaffToast, setShowStaffToast] = useState(false);
-  
+
   const urlParams = new URLSearchParams(window.location.search);
-  const tableNumber = urlParams.get('table') || localStorage.getItem('vb_table') || '04';
+  const tableNumber =
+    urlParams.get('table') || localStorage.getItem('vb_table') || '04';
 
   useEffect(() => {
     localStorage.setItem('vb_table', tableNumber);
@@ -50,20 +53,23 @@ export default function Menu() {
       .finally(() => setLoading(false));
   }, [tableNumber]);
 
-  let filteredMenu = menu.filter(item => {
-    const matchesCategory = activeCategory === 'All' || item.category === activeCategory;
-    const matchesSearch = item.name.toLowerCase().includes(search.toLowerCase());
+  let filteredMenu = menu.filter((item) => {
+    const matchesCategory =
+      activeCategory === 'All' || item.category === activeCategory;
+    const matchesSearch = item.name
+      .toLowerCase()
+      .includes(search.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
   if (sortOrder === 'low') {
-    filteredMenu.sort((a,b) => a.price - b.price);
+    filteredMenu.sort((a, b) => a.price - b.price);
   } else if (sortOrder === 'high') {
-    filteredMenu.sort((a,b) => b.price - a.price);
+    filteredMenu.sort((a, b) => b.price - a.price);
   }
 
   // Derive real categories from loaded menu
-  const categories = ['All', ...new Set(menu.map(i => i.category))];
+  const categories = ['All', ...new Set(menu.map((i) => i.category))];
 
   const handleCallStaff = () => {
     connectSocket();
@@ -78,20 +84,28 @@ export default function Menu() {
       {showStaffToast && (
         <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-bottom-4 duration-300">
           <div className="bg-[#1A0D08] text-white px-4 py-3 rounded-xl shadow-xl border border-[var(--color-brand-caramel)]/30 flex items-center gap-3 whitespace-nowrap">
-            <span className="material-symbols-outlined text-[var(--color-brand-caramel)]">concierge</span>
-            <p className="text-sm font-medium">A staff member is on their way!</p>
+            <span className="material-symbols-outlined text-[var(--color-brand-caramel)]">
+              concierge
+            </span>
+            <p className="text-sm font-medium">
+              A staff member is on their way!
+            </p>
           </div>
         </div>
       )}
 
       {/* Call Waiter Floating Button */}
       <div className="fixed inset-x-0 bottom-[100px] max-w-md mx-auto pointer-events-none z-50 flex justify-end px-4">
-        <button 
+        <button
           onClick={handleCallStaff}
           className="pointer-events-auto bg-[#2D2D2D] text-[var(--color-brand-caramel)] w-14 h-14 rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.4)] flex flex-col items-center justify-center border-2 border-[var(--color-brand-caramel)] hover:scale-105 active:scale-95 transition-transform"
         >
-          <span className="material-symbols-outlined text-[24px]">concierge</span>
-          <span className="text-[9px] font-bold uppercase tracking-wider mt-0.5">Staff</span>
+          <span className="material-symbols-outlined text-[24px]">
+            concierge
+          </span>
+          <span className="text-[9px] font-bold uppercase tracking-wider mt-0.5">
+            Staff
+          </span>
         </button>
       </div>
 
@@ -105,20 +119,26 @@ export default function Menu() {
         <div className="flex justify-between items-start">
           <div>
             <h1 className="text-3xl mb-2">Morning, Table {tableNumber}</h1>
-            <p className="text-[var(--color-brand-cream-light)] opacity-90 text-sm">Treat yourself to our seasonal roast.</p>
+            <p className="text-[var(--color-brand-cream-light)] opacity-90 text-sm">
+              Treat yourself to our seasonal roast.
+            </p>
           </div>
           <button
             onClick={() => navigate('/cart')}
             className="flex items-center gap-2 px-3 py-1.5 rounded-[12px] bg-white/10 hover:bg-white/20 transition-colors border border-white/10 shadow-sm"
           >
-            <span className="material-symbols-outlined text-[18px]">room_service</span>
+            <span className="material-symbols-outlined text-[18px]">
+              room_service
+            </span>
             <span className="text-[12px] font-bold tracking-wider">Cart</span>
           </button>
         </div>
 
         <div className="mt-6 flex gap-3 items-center">
           <div className="relative flex-1">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-brand-espresso-light)]">search</span>
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-brand-espresso-light)]">
+              search
+            </span>
             <input
               type="text"
               placeholder="Search our menu..."
@@ -128,43 +148,59 @@ export default function Menu() {
             />
           </div>
           <div className="relative shrink-0 text-[13px]">
-             <button 
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="h-11 flex items-center justify-between min-w-[130px] bg-white/10 text-white rounded-full px-4 font-medium border border-white/10 hover:bg-white/20 transition focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-caramel)]"
-             >
-                <span>{sortOrder === 'none' ? 'Sort By' : sortOrder === 'low' ? 'Price: Low-High' : 'Price: High-Low'}</span>
-                <span className="material-symbols-outlined text-[18px] ml-2">expand_more</span>
-             </button>
-             
-             {dropdownOpen && (
-               <>
-                 <div className="fixed inset-0 z-40" onClick={() => setDropdownOpen(false)} />
-                 <div className="absolute right-0 mt-2 w-48 bg-[#1A0D08] border border-white/10 rounded-[12px] shadow-xl z-50 overflow-hidden py-1">
-                    {[
-                      { val: 'none', label: 'Default' }, 
-                      { val: 'low', label: 'Price: Low-High' }, 
-                      { val: 'high', label: 'Price: High-Low' }
-                    ].map(opt => (
-                       <button
-                         key={opt.val}
-                         onClick={() => { setSortOrder(opt.val); setDropdownOpen(false); }}
-                         className={`w-full text-left px-4 py-2.5 transition-colors ${
-                           sortOrder === opt.val ? 'bg-[var(--color-brand-caramel)]/20 text-[var(--color-brand-caramel)] font-semibold' : 'text-white/80 hover:bg-white/5'
-                         }`}
-                       >
-                         {opt.label}
-                       </button>
-                    ))}
-                 </div>
-               </>
-             )}
+            <button
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              className="h-11 flex items-center justify-between min-w-[130px] bg-white/10 text-white rounded-full px-4 font-medium border border-white/10 hover:bg-white/20 transition focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-caramel)]"
+            >
+              <span>
+                {sortOrder === 'none'
+                  ? 'Sort By'
+                  : sortOrder === 'low'
+                    ? 'Price: Low-High'
+                    : 'Price: High-Low'}
+              </span>
+              <span className="material-symbols-outlined text-[18px] ml-2">
+                expand_more
+              </span>
+            </button>
+
+            {dropdownOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setDropdownOpen(false)}
+                />
+                <div className="absolute right-0 mt-2 w-48 bg-[#1A0D08] border border-white/10 rounded-[12px] shadow-xl z-50 overflow-hidden py-1">
+                  {[
+                    { val: 'none', label: 'Default' },
+                    { val: 'low', label: 'Price: Low-High' },
+                    { val: 'high', label: 'Price: High-Low' },
+                  ].map((opt) => (
+                    <button
+                      key={opt.val}
+                      onClick={() => {
+                        setSortOrder(opt.val);
+                        setDropdownOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-2.5 transition-colors ${
+                        sortOrder === opt.val
+                          ? 'bg-[var(--color-brand-caramel)]/20 text-[var(--color-brand-caramel)] font-semibold'
+                          : 'text-white/80 hover:bg-white/5'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
 
       {/* Categories */}
       <div className="px-4 py-6 overflow-x-auto whitespace-nowrap hide-scrollbar flex space-x-2">
-        {categories.map(cat => (
+        {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => setActiveCategory(cat)}
@@ -183,17 +219,27 @@ export default function Menu() {
       <div className="px-4">
         {loading && (
           <div className="space-y-4">
-            {[1,2,3].map(i => (
-              <div key={i} className="bg-white rounded-[16px] h-[120px] animate-pulse" />
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="bg-white rounded-[16px] h-[120px] animate-pulse"
+              />
             ))}
           </div>
         )}
 
         {error && (
           <div className="text-center py-12">
-            <span className="material-symbols-outlined text-5xl text-red-300 mb-4 block">wifi_off</span>
+            <span className="material-symbols-outlined text-5xl text-red-300 mb-4 block">
+              wifi_off
+            </span>
             <p className="text-gray-500">Could not load menu. {error}</p>
-            <button onClick={() => window.location.reload()} className="mt-4 text-[var(--color-brand-caramel)] font-medium underline">Try again</button>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-4 text-[var(--color-brand-caramel)] font-medium underline"
+            >
+              Try again
+            </button>
           </div>
         )}
 
@@ -201,25 +247,42 @@ export default function Menu() {
           <div className="grid grid-cols-2 gap-4 pb-20">
             {filteredMenu.length === 0 && (
               <div className="text-center py-12 text-gray-400 col-span-2">
-                <span className="material-symbols-outlined text-5xl block mb-3">search_off</span>
+                <span className="material-symbols-outlined text-5xl block mb-3">
+                  search_off
+                </span>
                 No items found
               </div>
             )}
-            {filteredMenu.map(item => (
-              <Card key={item.id} hoverable onClick={() => navigate(`/item/${item.id}`)} className="flex flex-col p-2 overflow-hidden bg-white shadow-[0_2px_10px_rgba(46,27,18,0.05)] border border-[var(--color-surface-4)] group">
+            {filteredMenu.map((item) => (
+              <Card
+                key={item.id}
+                hoverable
+                onClick={() => navigate(`/item/${item.id}`)}
+                className="flex flex-col p-2 overflow-hidden bg-white shadow-[0_2px_10px_rgba(46,27,18,0.05)] border border-[var(--color-surface-4)] group"
+              >
                 <div className="w-full h-[140px] rounded-[12px] overflow-hidden relative mb-3">
-                  <img src={item.image} alt={item.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
                   <div className="absolute top-2 right-2">
-                     <DietDot tag={item.dietary_tag} />
+                    <DietDot tag={item.dietary_tag} />
                   </div>
                 </div>
                 <div className="flex flex-col flex-1 px-1 justify-between">
                   <div>
-                    <h3 className="font-serif text-[0.95rem] leading-tight mb-1 text-[var(--color-brand-umber)] font-bold line-clamp-2">{item.name}</h3>
-                    <p className="text-[11px] text-gray-500 line-clamp-2 leading-relaxed">{item.description}</p>
+                    <h3 className="font-serif text-[0.95rem] leading-tight mb-1 text-[var(--color-brand-umber)] font-bold line-clamp-2">
+                      {item.name}
+                    </h3>
+                    <p className="text-[11px] text-gray-500 line-clamp-2 leading-relaxed">
+                      {item.description}
+                    </p>
                   </div>
                   <div className="mt-3 flex items-center justify-between">
-                    <span className="font-bold tabular-nums text-sm text-[var(--color-brand-caramel)]">₹{item.price}</span>
+                    <span className="font-bold tabular-nums text-sm text-[var(--color-brand-caramel)]">
+                      ₹{item.price}
+                    </span>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -227,7 +290,9 @@ export default function Menu() {
                       }}
                       className="bg-[#2E1B12] text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-[#8A5A44] transition-colors shadow-sm"
                     >
-                      <span className="material-symbols-outlined text-[16px] font-bold">add</span>
+                      <span className="material-symbols-outlined text-[16px] font-bold">
+                        add
+                      </span>
                     </button>
                   </div>
                 </div>
@@ -236,8 +301,6 @@ export default function Menu() {
           </div>
         )}
       </div>
-
-
 
       {/* Sticky Cart Bar */}
       {totalItems > 0 && (
@@ -248,10 +311,14 @@ export default function Menu() {
             onClick={() => navigate('/cart')}
           >
             <div className="flex items-center space-x-2">
-              <div className="bg-white/20 px-2.5 py-0.5 rounded text-sm font-semibold tabular-nums">{totalItems}</div>
+              <div className="bg-white/20 px-2.5 py-0.5 rounded text-sm font-semibold tabular-nums">
+                {totalItems}
+              </div>
               <span>View Cart</span>
             </div>
-            <span className="font-semibold tabular-nums">₹{subtotal.toFixed(2)}</span>
+            <span className="font-semibold tabular-nums">
+              ₹{subtotal.toFixed(2)}
+            </span>
           </Button>
         </div>
       )}

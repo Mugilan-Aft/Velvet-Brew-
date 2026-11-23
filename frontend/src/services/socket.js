@@ -4,8 +4,8 @@ import { BASE_URL } from './api';
 if (!import.meta.env.VITE_API_URL) {
   console.warn(
     '[Velvet Brew] VITE_API_URL is not set. ' +
-    'Socket.IO will attempt to connect to http://localhost:3000 which will fail in production. ' +
-    'Set VITE_API_URL in your Vercel environment variables and redeploy.'
+      'Socket.IO will attempt to connect to http://localhost:3000 which will fail in production. ' +
+      'Set VITE_API_URL in your Vercel environment variables and redeploy.',
   );
 }
 

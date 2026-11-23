@@ -24,7 +24,9 @@ export default function ProtectedRoute({ children }) {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0E0806] flex items-center justify-center">
-         <span className="material-symbols-outlined text-[var(--color-brand-caramel)] text-4xl animate-spin">refresh</span>
+        <span className="material-symbols-outlined text-[var(--color-brand-caramel)] text-4xl animate-spin">
+          refresh
+        </span>
       </div>
     );
   }
